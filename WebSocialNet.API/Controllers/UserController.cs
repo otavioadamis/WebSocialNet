@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using WebSocialNet.API.Authorization;
 using WebSocialNet.Domain.DTOs.UserDTOs;
 using WebSocialNet.Domain.Entities;
 using WebSocialNet.Domain.Interfaces.IServices;
@@ -45,6 +47,7 @@ namespace WebSocialNet.API.Controllers
             return Ok(loggedUser);
         }
 
+        [CustomAuthorize]
         [HttpPut("{id}")]
         public ActionResult<UserResponseDTO> Update(string id, UserUpdateInfoDTO request)
         {
@@ -52,6 +55,7 @@ namespace WebSocialNet.API.Controllers
             return Ok(updatedUser);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {

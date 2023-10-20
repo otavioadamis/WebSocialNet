@@ -1,0 +1,14 @@
+﻿using System.ComponentModel.DataAnnotations;
+using WebSocialNet.Domain.DTOs.UserDTOs;
+
+namespace WebSocialNet.Domain.Entities
+{
+    public class Message
+    {
+        [Key]
+        public string Id { get; set; } = null!;
+        public string Sender { get; set; } = null!;
+        public string Content { get; set; } = null!;
+        public string ChatId { get; set; } = null!;
+    }
+}

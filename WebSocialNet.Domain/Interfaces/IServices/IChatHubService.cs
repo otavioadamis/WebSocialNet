@@ -9,5 +9,6 @@ namespace WebSocialNet.Domain.Interfaces.IServices
     public interface IChatHubService
     {
         Task ReceiveMessage(string message);
+        Task ReceiveMessage(string fromUser, string message);
     }
 }

@@ -11,7 +11,7 @@ namespace WebSocialNet.Service
         public async Task<string> UseChatGPT(string query)
         {
             string outputResult = "";
-            var openai = new OpenAIAPI("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");
+            var openai = new OpenAIAPI("");
             CompletionRequest completionRequest = new CompletionRequest();
             completionRequest.Prompt = query;
             completionRequest.Model = OpenAI_API.Models.Model.DavinciText;

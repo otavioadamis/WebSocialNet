@@ -12,8 +12,8 @@ using WebSocialNet.Dal.Data;
 namespace WebSocialNet.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231010013858_stringIds")]
-    partial class stringIds
+    [Migration("20231011015212_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -62,10 +62,6 @@ namespace WebSocialNet.Dal.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("FriendshipId");
-
-                    b.HasIndex("FriendId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Friendships");
                 });
@@ -128,21 +124,6 @@ namespace WebSocialNet.Dal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("WebSocialNet.Domain.Entities.Friendship", b =>
-                {
-                    b.HasOne("WebSocialNet.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("WebSocialNet.Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

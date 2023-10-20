@@ -15,6 +15,7 @@ namespace WebSocialNet.Dal.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<Chat> Chats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,20 +35,32 @@ namespace WebSocialNet.Dal.Data
             .Property(u => u.Id)
             .HasDefaultValueSql("uuid_generate_v4()");
 
+            modelBuilder.Entity<Chat>()
+                .Property(u => u.ChatId)
+                .HasDefaultValueSql("uuid_generate_v4()");
+
+            modelBuilder.Entity<Message>()
+                .Property(m => m.Id)
+                .HasDefaultValueSql("uuid_generate_v4()"); // Add a unique identifier property for Message
+
+            modelBuilder.Entity<Chat>()
+               .HasOne(chat => chat.LatestMessage)
+               .WithOne()
+               .HasForeignKey<Chat>(chat => chat.LatestMessageId);
+
+            modelBuilder.Entity<Comment>()
+                .Property(f => f.UserId);
+
             modelBuilder.Entity<Friendship>()
                 .HasKey(f => f.FriendshipId);
 
+            // Configure the foreign keys
             modelBuilder.Entity<Friendship>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(f => f.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .Property(f => f.UserId);
 
             modelBuilder.Entity<Friendship>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(f => f.FriendId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .Property(f => f.FriendId);
+
         }
     }
 }
