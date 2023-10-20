@@ -32,33 +32,32 @@ namespace WebSocialNet.Service
         public ChatResponseDTO GetChat(string currentUserId, string userId)
         {
             var chat = _chatRepository.FindChatsWithUserIds(currentUserId, userId);
+                if(chat == null) { throw new ArgumentException("chat not found"); }
 
-            if (chat != null)
+            var chatUser = _userRepository.GetById(userId);
+            var currentUser = _userRepository.GetById(currentUserId);
+
+            if (currentUser == null || chatUser == null)
             {
-                var chatUser = _userRepository.GetById(userId);
-                var currentUser = _userRepository.GetById(currentUserId);
-
-                if (currentUser == null || chatUser == null) 
-                {
-                    throw new ArgumentException("Error finding users!");
-                }
-
-                var chatModel = new SingleChatDTO();
-                chatModel.CreateModel(chat);
-
-                var chatUserModel = new UserResponseDTO();
-                chatUserModel = chatUserModel.CreateModel(chatUser);
-
-                var currentUserModel = new UserResponseDTO();
-                currentUserModel = currentUserModel.CreateModel(currentUser);
-
-                var response = new ChatResponseDTO()
-                {
-                    Chat = chatModel,
-                    Users = { chatUserModel, currentUserModel }
-                };
+                throw new ArgumentException("Error finding users!");
             }
-            throw new ArgumentException("Chat not found!");
+
+            var chatModel = new SingleChatDTO();
+            chatModel = chatModel.CreateModel(chat);
+
+            var chatUserModel = new UserResponseDTO();
+            chatUserModel = chatUserModel.CreateModel(chatUser);
+
+            var currentUserModel = new UserResponseDTO();
+            currentUserModel = currentUserModel.CreateModel(currentUser);
+
+            var response = new ChatResponseDTO()
+            {
+                Chat = chatModel,
+                Users = new List<UserResponseDTO> { chatUserModel, currentUserModel }
+            };
+
+            return response;
         }
 
         public ChatResponseDTO CreateChat(string currentUserId, string userId)
@@ -74,7 +73,7 @@ namespace WebSocialNet.Service
             var newChat = new Chat()
             {
                 ChatName = chatUser.Name,
-                UsersId = { userId, currentUserId },
+                UsersId = new List<string>{ userId, currentUserId }
             };
             
             _chatRepository.Add(newChat);
@@ -83,7 +82,7 @@ namespace WebSocialNet.Service
             var fullChat = _chatRepository.GetById(newChat.ChatId);
 
             var createdChatModel = new SingleChatDTO();
-            createdChatModel.CreateModel(fullChat);
+            createdChatModel = createdChatModel.CreateModel(fullChat);
             
             var chatUserModel = new UserResponseDTO();
             chatUserModel = chatUserModel.CreateModel(chatUser);
@@ -94,7 +93,7 @@ namespace WebSocialNet.Service
             var res = new ChatResponseDTO()
             {
                 Chat = createdChatModel,
-                Users = { chatUserModel, currentUserModel }
+                Users = new List<UserResponseDTO>{ chatUserModel, currentUserModel }
             };
             return res;
         }
