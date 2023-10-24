@@ -29,7 +29,7 @@ namespace WebSocialNet.Service
             return foundUsers;
         }
 
-        public ChatResponseDTO GetChat(string currentUserId, string userId)
+        public ChatDTO GetChat(string currentUserId, string userId)
         {
             var chat = _chatRepository.FindChatsWithUserIds(currentUserId, userId);
                 if(chat == null) { throw new ArgumentException("chat not found"); }
@@ -42,7 +42,7 @@ namespace WebSocialNet.Service
                 throw new ArgumentException("Error finding users!");
             }
 
-            var chatModel = new SingleChatDTO();
+            var chatModel = new ChatDTO();
             chatModel = chatModel.CreateModel(chat);
 
             var chatUserModel = new UserResponseDTO();
@@ -51,16 +51,12 @@ namespace WebSocialNet.Service
             var currentUserModel = new UserResponseDTO();
             currentUserModel = currentUserModel.CreateModel(currentUser);
 
-            var response = new ChatResponseDTO()
-            {
-                Chat = chatModel,
-                Users = new List<UserResponseDTO> { chatUserModel, currentUserModel }
-            };
+            chatModel.Users = new List<UserResponseDTO>() { currentUserModel, chatUserModel };
 
-            return response;
+            return chatModel;
         }
 
-        public ChatResponseDTO CreateChat(string currentUserId, string userId)
+        public ChatDTO CreateChat(string currentUserId, string userId)
         {
             var chatUser = _userRepository.GetById(userId);
             var currentUser = _userRepository.GetById(currentUserId);
@@ -81,7 +77,7 @@ namespace WebSocialNet.Service
 
             var fullChat = _chatRepository.GetById(newChat.ChatId);
 
-            var createdChatModel = new SingleChatDTO();
+            var createdChatModel = new ChatDTO();
             createdChatModel = createdChatModel.CreateModel(fullChat);
             
             var chatUserModel = new UserResponseDTO();
@@ -90,12 +86,9 @@ namespace WebSocialNet.Service
             var currentUserModel = new UserResponseDTO();
             currentUserModel = currentUserModel.CreateModel(currentUser);
 
-            var res = new ChatResponseDTO()
-            {
-                Chat = createdChatModel,
-                Users = new List<UserResponseDTO>{ chatUserModel, currentUserModel }
-            };
-            return res;
+            createdChatModel.Users = new List<UserResponseDTO>() { currentUserModel, chatUserModel };
+            
+            return createdChatModel;
         }
     }
 }

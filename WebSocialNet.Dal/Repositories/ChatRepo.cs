@@ -44,6 +44,16 @@ namespace WebSocialNet.Dal.Repositories
             return findedChat;
         }
 
+        public IEnumerable<Chat> GetAllChatsFromUserId(string userId) 
+        {
+            var chats = _dbContext.Chats
+                .Where(chat => chat.UsersId.Contains(userId))
+                .Include(chat => chat.LatestMessage)
+                .ToList();
+
+            return chats;
+        } 
+
         public Chat GetById(string _id)
         {
             var chat = _dbContext.Chats.FirstOrDefault(x => x.ChatId == _id);

@@ -8,19 +8,24 @@ using WebSocialNet.Domain.Entities;
 
 namespace WebSocialNet.Domain.DTOs.ChatDTOs
 {
-    public class SingleChatDTO
+    public class ChatDTO
     {
         public string ChatId { get; set; } = null!;
         public string ChatName { get; set; } = null!;
         public Message? latestMessage { get; set; }
+        public string? UserAdminId { get; set; }
+        public bool IsGroupChat { get; set; }
+        public List<UserResponseDTO>? Users { get; set; }
 
-        public SingleChatDTO CreateModel(Chat chat)
+        public ChatDTO CreateModel(Chat chat)
         {
-            var chatModel = new SingleChatDTO()
+            var chatModel = new ChatDTO()
             {
                 ChatId = chat.ChatId,
                 ChatName = chat.ChatName,
-                latestMessage = chat.LatestMessage
+                latestMessage = chat.LatestMessage,
+                UserAdminId = chat.UserAdminId,
+                IsGroupChat = chat.IsGroupChat
             };
             return chatModel;
         }

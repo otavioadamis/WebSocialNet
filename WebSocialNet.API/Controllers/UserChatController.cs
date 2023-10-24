@@ -27,7 +27,7 @@ namespace WebSocialNet.API.Controllers
         }
 
         [CustomAuthorize]
-        [HttpPost("chat")]
+        [HttpPost()]
         public IActionResult CreateChat(string userId, string currentUserId) 
         {
             var createdChat = _userChatService.CreateChat(userId, currentUserId);
@@ -35,7 +35,7 @@ namespace WebSocialNet.API.Controllers
         }
 
         [CustomAuthorize]
-        [HttpGet("chat")]
+        [HttpGet()]
         public IActionResult GetChat(string userId, string currentUserId)
         {
             var findedChat = _userChatService.GetChat(userId, currentUserId);
