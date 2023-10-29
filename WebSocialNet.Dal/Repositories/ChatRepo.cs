@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WebSocialNet.Dal.Data;
+using WebSocialNet.Domain.DTOs.ChatDTOs;
 using WebSocialNet.Domain.Entities;
 using WebSocialNet.Domain.Interfaces.IRepositories;
 
@@ -7,7 +8,6 @@ namespace WebSocialNet.Dal.Repositories
 {
     public class ChatRepo : IChatRepo
     {
-        //TODO AppDbContext and connect with POSTGRESQL
         private readonly AppDbContext _dbContext;
         public ChatRepo(AppDbContext appDbContext)
         {
@@ -34,25 +34,34 @@ namespace WebSocialNet.Dal.Repositories
             return allChats;
         }
 
-        public Chat FindChatsWithUserIds(string currentUserId, string userId)
+        // TODO Reformular banco, criar tabela auxiliar many to many chat e users, reformular querys.
+        public IEnumerable<ChatDTO> GetChatsWithUsersIds(string currentUserId, string userId)
         {
-            var findedChat = _dbContext.Chats
-                .Where(chat => !chat.IsGroupChat && chat.UsersId.Any(user => user.Equals(currentUserId)))
-                .Where(chat => chat.UsersId.Any(user => user.Equals(userId)))
-                .FirstOrDefault();
-
-            return findedChat;
+            var foundChat =  from chat in _dbContext.Chats
+                             where chat.UsersId.Contains(userId) && chat.UsersId.Contains(currentUserId)
+                             join chatUser in _dbContext.Users on userId equals chatUser.Id
+                             select new ChatDTO
+                             {
+                                ChatName = chatUser.Name,
+                                UserEmail = chatUser.Email,
+                             };
+            return foundChat;
         }
 
-        public IEnumerable<Chat> GetAllChatsFromUserId(string userId) 
-        {
-            var chats = _dbContext.Chats
-                .Where(chat => chat.UsersId.Contains(userId))
-                .Include(chat => chat.LatestMessage)
-                .ToList();
 
-            return chats;
-        } 
+        public IEnumerable<RecentChatsDTO> GetRecentChatsFromUserId(string userId)
+        {
+            var recentChats = from chat in _dbContext.Chats
+                              where chat.UsersId.Contains(userId)
+                              join user in _dbContext.Users on chat.UsersId.First() equals user.Id
+                              select new RecentChatsDTO
+                              {
+                                  LastMessage = chat.LatestMessage.Content,
+                                  ChatName = user.Name,
+                              };
+            return recentChats;
+        }
+
 
         public Chat GetById(string _id)
         {

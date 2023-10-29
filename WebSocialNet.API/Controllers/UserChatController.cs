@@ -41,5 +41,14 @@ namespace WebSocialNet.API.Controllers
             var findedChat = _userChatService.GetChat(userId, currentUserId);
             return Ok(findedChat);
         }
+
+        [CustomAuthorize]
+        [HttpGet("recentchats")]
+        public IActionResult GetRecentChats()
+        {
+            var user = (User)HttpContext.Items["User"];
+            var recentChats = _userChatService.GetRecentChats(user.Id);
+            return Ok(recentChats);
+        }
     }
 }

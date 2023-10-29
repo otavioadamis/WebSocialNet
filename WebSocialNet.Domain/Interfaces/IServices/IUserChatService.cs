@@ -12,6 +12,7 @@ namespace WebSocialNet.Domain.Interfaces.IServices
     {
         public IEnumerable<User>? SearchUsers(string keyword, string currentUserId);
         public ChatDTO CreateChat(string currentUserId, string userId);
-        public ChatDTO GetChat(string currentUserId, string userId);
+        public IEnumerable<ChatDTO> GetChat(string currentUserId, string userId);
+        public IEnumerable<RecentChatsDTO> GetRecentChats(string userId);
     }
 }

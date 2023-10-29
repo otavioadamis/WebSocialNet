@@ -7,7 +7,6 @@ namespace WebSocialNet.Dal.Repositories
 {
     public class UserRepo : IUserRepo
     {
-        //TODO AppDbContext and connect with POSTGRESQL
         private readonly AppDbContext _dbContext;
         public UserRepo(AppDbContext appDbContext)
         {
