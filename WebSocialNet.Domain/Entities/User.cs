@@ -11,5 +11,7 @@ namespace WebSocialNet.Domain.Entities
         public required string Password { get; set; }
         public byte[]? ProfilePicture { get; set; }
         public string? Bio { get; set; }
+
+        public ICollection<Chat>? Chats { get; set; }
     }
 }

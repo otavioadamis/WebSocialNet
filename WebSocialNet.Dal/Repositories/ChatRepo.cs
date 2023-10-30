@@ -48,7 +48,7 @@ namespace WebSocialNet.Dal.Repositories
             return foundChat;
         }
 
-
+        // TODO adjust this when i have UserChat table (exclude UsersId list)
         public IEnumerable<RecentChatsDTO> GetRecentChatsFromUserId(string userId)
         {
             var recentChats = from chat in _dbContext.Chats

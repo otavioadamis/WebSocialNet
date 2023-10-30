@@ -1,4 +1,6 @@
-﻿using WebSocialNet.Domain.DTOs.ChatDTOs;
+﻿using System.Runtime.Intrinsics.X86;
+using System;
+using WebSocialNet.Domain.DTOs.ChatDTOs;
 using WebSocialNet.Domain.Entities;
 using WebSocialNet.Domain.Interfaces.IRepositories;
 using WebSocialNet.Domain.Interfaces.IServices;
@@ -9,11 +11,14 @@ namespace WebSocialNet.Service
     {
         private readonly IUserRepo _userRepository;
         private readonly IChatRepo _chatRepository;
+        private readonly IUserChatRepo _userChatRepository;
 
-        public UserChatService(IUserRepo userRepository, IChatRepo chatRepository)
+
+        public UserChatService(IUserRepo userRepository, IChatRepo chatRepository, IUserChatRepo userChatRepository)
         {
             _userRepository = userRepository;
             _chatRepository = chatRepository;
+            _userChatRepository = userChatRepository;
         }
 
         public IEnumerable<User>? SearchUsers(string keyword, string currentUserId)
@@ -22,6 +27,7 @@ namespace WebSocialNet.Service
             {
                 return Enumerable.Empty<User>();
             }
+            
             
             //TODO Return user response models
             var foundUsers = _userRepository.SearchUsers(keyword, currentUserId);            
@@ -48,21 +54,19 @@ namespace WebSocialNet.Service
 
             var newChat = new Chat()
             {
-                ChatName = chatUser.Name,
-                UsersId = new List<string>{ userId, currentUserId }
+                ChatName = "SingleChat",
             };
+
+            //TODO Create UserChat relationship
             
             _chatRepository.Add(newChat);
             _chatRepository.SaveChanges();
-
-            var fullChat = _chatRepository.GetById(newChat.ChatId);
 
             var newChatDTO = new ChatDTO()
             {
                 ChatName = chatUser.Name,
                 UserEmail = chatUser.Email,
-            };
-            
+            };          
             return newChatDTO;
         }
 

@@ -12,7 +12,12 @@ namespace WebSocialNet.Domain.Entities
     {
         [Key]
         public string FriendshipId { get; set; } = null!; // Primary key
+        
         public string UserId { get; set; } = null!;
+        public User User { get; set; } = null!;
+        
         public string FriendId { get; set; } = null!;
+        public User Friend { get; set; } = null!;
+
     }
 }

@@ -16,6 +16,7 @@ namespace WebSocialNet.Dal.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
         public DbSet<Chat> Chats { get; set; }
+        public DbSet<UserChat> UsersChats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,21 +28,32 @@ namespace WebSocialNet.Dal.Data
             .Property(u => u.Id)
             .HasDefaultValueSql("uuid_generate_v4()");
 
+            modelBuilder.Entity<User>()
+                 .HasMany(u => u.Chats)
+                 .WithMany()
+                 .UsingEntity<UserChat>(
+                      j => j.HasOne(e => e.Chat).WithMany().HasForeignKey(e => e.ChatId),
+                      j => j.HasOne(e => e.User).WithMany().HasForeignKey(e => e.UserId));
+
             modelBuilder.Entity<Post>()
-            .Property(u => u.Id)
+            .Property(p => p.Id)
             .HasDefaultValueSql("uuid_generate_v4()");
 
             modelBuilder.Entity<Comment>()
-            .Property(u => u.Id)
+            .Property(c => c.Id)
             .HasDefaultValueSql("uuid_generate_v4()");
 
             modelBuilder.Entity<Chat>()
-                .Property(u => u.ChatId)
+                .Property(c => c.ChatId)
+                .HasDefaultValueSql("uuid_generate_v4()");
+
+            modelBuilder.Entity<UserChat>()
+                .Property(uc => uc.Id)
                 .HasDefaultValueSql("uuid_generate_v4()");
 
             modelBuilder.Entity<Message>()
                 .Property(m => m.Id)
-                .HasDefaultValueSql("uuid_generate_v4()"); // Add a unique identifier property for Message
+                .HasDefaultValueSql("uuid_generate_v4()");// Add a unique identifier property for Message
 
             modelBuilder.Entity<Chat>()
                .HasOne(chat => chat.LatestMessage)
@@ -51,6 +63,7 @@ namespace WebSocialNet.Dal.Data
             modelBuilder.Entity<Comment>()
                 .Property(f => f.UserId);
 
+            // Friendship table
             modelBuilder.Entity<Friendship>()
                 .HasKey(f => f.FriendshipId);
 
