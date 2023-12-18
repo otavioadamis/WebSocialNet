@@ -11,9 +11,9 @@ namespace WebSocialNet.Domain.Entities
     {
         [Key]
         public string Id { get; set; } = null!;
-        public required string Text { get; set; }
+        public string Text { get; set; } = null!;
         public byte[]? CommentImage { get; set; }
         public DateTime PostedAt { get; set; }
-        public string UserId { get; set; } = null!;
+        public User Creator { get; set; } = null!;
     }
 }

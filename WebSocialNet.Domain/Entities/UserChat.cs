@@ -15,8 +15,5 @@ namespace WebSocialNet.Domain.Entities
 
         public string UserId { get; set; } = null!;
         public User User { get; set; } = null!;
-
-        public DateTime EnrollmentDate { get; set; }
-        public int? CompletedLessons { get; set; }
     }
 }

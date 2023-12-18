@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebSocialNet.Dal.Data;
@@ -11,9 +12,11 @@ using WebSocialNet.Dal.Data;
 namespace WebSocialNet.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231123021143_friendships")]
+    partial class friendships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,9 +42,6 @@ namespace WebSocialNet.Dal.Migrations
 
                     b.Property<string>("LatestMessageId")
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserAdminId")
                         .HasColumnType("text");
@@ -152,9 +152,6 @@ namespace WebSocialNet.Dal.Migrations
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("SendedAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Sender")
                         .IsRequired()

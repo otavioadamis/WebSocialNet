@@ -27,35 +27,33 @@ namespace WebSocialNet.Service
             if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
             {
                 _connections.Remove(Context.ConnectionId);
-                Clients.Group(userConnection.Room).ReceiveMessage(_botUser, $"{userConnection.User} has left");
+                Clients.Group(userConnection.Chat).ReceiveMessage(_botUser, $"{userConnection.User} has left");
             }
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task JoinGroup(UserConnection userConnection)
+        public async Task JoinChat(UserConnection userConnection)
         {
-            
-            await Groups.AddToGroupAsync(Context.ConnectionId, userConnection.Room);
+            await Groups.AddToGroupAsync(Context.ConnectionId, userConnection.Chat);
             _connections[Context.ConnectionId] = userConnection;
 
-            await Clients.Group(userConnection.Room).ReceiveMessage(_botUser, $"{userConnection.User} has joined {userConnection.Room}");
+            await Clients.Group(userConnection.Chat).ReceiveMessage(_botUser, $"{userConnection.User} has joined");
         }
 
-        // TODO PRIVATE MESSAGES
+        /// TODO PRIVATE MESSAGES
         public async Task SendPrivateMessage(string user, string message)
         {
             Console.WriteLine($"{Context.ConnectionId} is sending a private message to {user}: {message}");
             await Clients.Client(user).ReceiveMessage(message);
         }
 
-        public async Task SendMessageInGroup(string message)
+        public async Task SendMessageToChat(string message)
         {
             if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
             {
-                await Clients.Group(userConnection.Room).ReceiveMessage(userConnection.User, message);
+                await Clients.Group(userConnection.Chat).ReceiveMessage(userConnection.User, message);
             }
         }
-
     }
 }
 

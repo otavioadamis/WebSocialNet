@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace WebSocialNet.Domain.DTOs.ChatDTOs
 {
-    public class UserConnection
+    public class GroupChatDTO
     {
-        public string User { get; set; } = null!;
-        public string Chat { get; set; } = null!;
-
+        public string ChatName { get; set; } = null!;
+        // todo - > chat image ( groupchat image (can be null) )
     }
 }

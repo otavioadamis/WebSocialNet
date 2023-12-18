@@ -8,11 +8,15 @@ using WebSocialNet.Domain.Entities;
 
 namespace WebSocialNet.Domain.Interfaces.IServices
 {
-    public interface IUserChatService
+    public interface IChatService
     {
         public IEnumerable<User>? SearchUsers(string keyword, string currentUserId);
         public ChatDTO CreateChat(string currentUserId, string userId);
-        public IEnumerable<ChatDTO> GetChat(string currentUserId, string userId);
+        public GroupChatDTO CreateGroupChat(string senderUserId, List<string> receiversUsersIds, string chatName);
+        public IEnumerable<ChatDTO> GetChat(string chatId, string senderUserId);
         public IEnumerable<RecentChatsDTO> GetRecentChats(string userId);
+        public GroupChatDTO RenameGroupChat(string chatId, string newGroupName);
+        public GroupChatDTO AddToGroup(string userId, string groupChatId);
+        public GroupChatDTO RemoveFromGroup(string userId, string groupChatId);
     }
 }

@@ -16,5 +16,6 @@ namespace WebSocialNet.Domain.Entities
         public required string Description { get; set; }
         public byte[]? PostImage { get; set; }
         public DateTime CreatedDate { get; set; }
+        public User Creator { get; set; } = null!; //Navigation property
     }
 }

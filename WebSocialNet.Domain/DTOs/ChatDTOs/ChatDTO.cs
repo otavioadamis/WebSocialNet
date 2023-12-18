@@ -10,7 +10,8 @@ namespace WebSocialNet.Domain.DTOs.ChatDTOs
 {
     public class ChatDTO
     {
-        public string ChatName { get; set; } = null!;
-        public string UserEmail { get; set; } = null!;
+        public string ChatName { get; set; } = null!; //The receiver username
+        public string UserEmail { get; set; } = null!; //Email of the receiver
+        // todo - > chat image ( user image )
     }
 }

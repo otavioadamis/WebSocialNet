@@ -65,12 +65,17 @@ namespace WebSocialNet.API
             //builder.Services.AddScoped<IPostRepo, PostRepo>();
             //builder.Services.AddScoped<ICommentRepo, CommentRepo>();
             builder.Services.AddScoped<IChatRepo, ChatRepo>();
+            builder.Services.AddScoped<IUserChatRepo, UserChatRepo>();
+            builder.Services.AddScoped<IMessageRepo, MessageRepo>();
+            builder.Services.AddScoped<IFriendshipRepo, FriendshipRepo>();
 
             builder.Services.AddScoped<IUserService, UserService>();
             //builder.Services.AddScoped<IOpenAIService, OpenAIService>();
             builder.Services.AddScoped<IAuthorizationService, AuthorizationService>();
             builder.Services.AddScoped<ChatHubService>();
-            builder.Services.AddScoped<IUserChatService, UserChatService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
+            builder.Services.AddScoped<IMessageService, MessageService>();
+            builder.Services.AddScoped<IUserFriendService, UserFriendService>();
 
             builder.Services.AddSignalR();
 

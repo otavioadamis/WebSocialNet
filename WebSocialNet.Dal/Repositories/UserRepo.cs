@@ -46,6 +46,15 @@ namespace WebSocialNet.Dal.Repositories
             var user = _dbContext.Users.FirstOrDefault(x => x.Id == _id);
             return user;
         }
+
+        public IEnumerable<User> GetSenderAndUsersListByIds(string senderUserId, List<string> usersIds)
+        {
+            usersIds.Add(senderUserId);
+
+            return _dbContext.Users
+                .Where(u => usersIds.Contains(u.Id)).ToList();
+        }
+
         public User GetByEmail(string email)
         {
             var user = _dbContext.Users.FirstOrDefault(x => x.Email == email);

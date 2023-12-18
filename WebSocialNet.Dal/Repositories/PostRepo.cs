@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace WebSocialNet.Dal.Repositories
 {
-    //TODO PostRepository
     public class PostRepo : IPostRepo
     {
 

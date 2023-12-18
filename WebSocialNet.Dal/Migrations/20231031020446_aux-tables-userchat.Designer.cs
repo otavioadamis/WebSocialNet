@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebSocialNet.Dal.Data;
@@ -11,9 +12,11 @@ using WebSocialNet.Dal.Data;
 namespace WebSocialNet.Dal.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231031020446_aux-tables-userchat")]
+    partial class auxtablesuserchat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,9 +43,6 @@ namespace WebSocialNet.Dal.Migrations
                     b.Property<string>("LatestMessageId")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("UserAdminId")
                         .HasColumnType("text");
 
@@ -64,10 +64,6 @@ namespace WebSocialNet.Dal.Migrations
                     b.Property<byte[]>("CommentImage")
                         .HasColumnType("bytea");
 
-                    b.Property<string>("CreatorId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("PostedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -75,55 +71,23 @@ namespace WebSocialNet.Dal.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
-
                     b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("WebSocialNet.Domain.Entities.FriendRequest", b =>
-                {
-                    b.Property<string>("FriendRequestId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ReceiverId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("RequestDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("FriendRequestId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("FriendRequest");
                 });
 
             modelBuilder.Entity("WebSocialNet.Domain.Entities.Friendship", b =>
                 {
                     b.Property<string>("FriendshipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnType("text");
 
                     b.Property<string>("FriendId")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("FriendsAt")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -153,18 +117,13 @@ namespace WebSocialNet.Dal.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("SendedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Sender")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChatId");
-
-                    b.ToTable("Messages");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("WebSocialNet.Domain.Entities.Post", b =>
@@ -181,10 +140,6 @@ namespace WebSocialNet.Dal.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("CreatorId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -197,8 +152,6 @@ namespace WebSocialNet.Dal.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatorId");
 
                     b.ToTable("Posts");
                 });
@@ -266,36 +219,6 @@ namespace WebSocialNet.Dal.Migrations
                     b.Navigation("LatestMessage");
                 });
 
-            modelBuilder.Entity("WebSocialNet.Domain.Entities.Comment", b =>
-                {
-                    b.HasOne("WebSocialNet.Domain.Entities.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Creator");
-                });
-
-            modelBuilder.Entity("WebSocialNet.Domain.Entities.FriendRequest", b =>
-                {
-                    b.HasOne("WebSocialNet.Domain.Entities.User", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebSocialNet.Domain.Entities.User", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Receiver");
-
-                    b.Navigation("Sender");
-                });
-
             modelBuilder.Entity("WebSocialNet.Domain.Entities.Friendship", b =>
                 {
                     b.HasOne("WebSocialNet.Domain.Entities.User", "Friend")
@@ -313,28 +236,6 @@ namespace WebSocialNet.Dal.Migrations
                     b.Navigation("Friend");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("WebSocialNet.Domain.Entities.Message", b =>
-                {
-                    b.HasOne("WebSocialNet.Domain.Entities.Chat", "Chat")
-                        .WithMany()
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Chat");
-                });
-
-            modelBuilder.Entity("WebSocialNet.Domain.Entities.Post", b =>
-                {
-                    b.HasOne("WebSocialNet.Domain.Entities.User", "Creator")
-                        .WithMany()
-                        .HasForeignKey("CreatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("WebSocialNet.Domain.Entities.UserChat", b =>

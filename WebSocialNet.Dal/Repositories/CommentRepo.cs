@@ -10,5 +10,6 @@ namespace WebSocialNet.Dal.Repositories
     //TODO CommentRepository
     public class CommentRepo : ICommentRepo
     {
+
     }
 }

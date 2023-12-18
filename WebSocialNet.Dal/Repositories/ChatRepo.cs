@@ -34,31 +34,40 @@ namespace WebSocialNet.Dal.Repositories
             return allChats;
         }
 
-        // TODO Reformular banco, criar tabela auxiliar many to many chat e users, reformular querys.
-        public IEnumerable<ChatDTO> GetChatsWithUsersIds(string currentUserId, string userId)
+        public IEnumerable<ChatDTO> GetChatsWithUsersIds(string chatId, string senderUserId)
         {
-            var foundChat =  from chat in _dbContext.Chats
-                             where chat.UsersId.Contains(userId) && chat.UsersId.Contains(currentUserId)
-                             join chatUser in _dbContext.Users on userId equals chatUser.Id
-                             select new ChatDTO
-                             {
-                                ChatName = chatUser.Name,
-                                UserEmail = chatUser.Email,
-                             };
-            return foundChat;
+            var foundedChat = (
+                from chat in _dbContext.Chats
+                where chat.ChatId == chatId
+                join userchat in _dbContext.UsersChats on chat.ChatId equals userchat.ChatId
+                join receiver in _dbContext.Users on userchat.UserId equals receiver.Id
+                where receiver.Id != senderUserId
+                select new ChatDTO
+                {
+                    ChatName = receiver.Name,
+                    UserEmail = receiver.Email
+                });
+
+            return foundedChat;
         }
 
-        // TODO adjust this when i have UserChat table (exclude UsersId list)
         public IEnumerable<RecentChatsDTO> GetRecentChatsFromUserId(string userId)
         {
-            var recentChats = from chat in _dbContext.Chats
-                              where chat.UsersId.Contains(userId)
-                              join user in _dbContext.Users on chat.UsersId.First() equals user.Id
+            var recentChats = (from usersChat in _dbContext.UsersChats
+                              where usersChat.UserId == userId
+                              join chat in _dbContext.Chats
+                                  on usersChat.ChatId equals chat.ChatId
+                              join otherUsersChat in _dbContext.UsersChats
+                                  on chat.ChatId equals otherUsersChat.ChatId
+                              where otherUsersChat.UserId != userId // Exclude the logged-in user
+                              join otherUser in _dbContext.Users
+                                  on otherUsersChat.UserId equals otherUser.Id
+                              orderby chat.UpdatedAt descending
                               select new RecentChatsDTO
                               {
                                   LastMessage = chat.LatestMessage.Content,
-                                  ChatName = user.Name,
-                              };
+                                  ChatName = chat.IsGroupChat ? chat.ChatName : otherUser.Name,
+                              }).Distinct().ToList();
             return recentChats;
         }
 

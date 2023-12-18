@@ -7,10 +7,13 @@ namespace WebSocialNet.Domain.Entities
         public string ChatId { get; set; } = null!;
         public string ChatName { get; set; } = null!;
         public bool IsGroupChat { get; set; } = false;
-        public string? UserAdminId { get; set; } 
+        public string? UserAdminId { get; set; }
         public string? LatestMessageId { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
+        //todo > chat image
         
         public Message? LatestMessage { get; set; } // Navigation property
-        public ICollection<User> Users { get; set; } = null!;
+        public ICollection<User> Users { get; set; } = null!; // Navigation property
     }
 }

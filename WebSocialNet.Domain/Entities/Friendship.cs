@@ -19,5 +19,6 @@ namespace WebSocialNet.Domain.Entities
         public string FriendId { get; set; } = null!;
         public User Friend { get; set; } = null!;
 
+        public DateTime FriendsAt { get; set; }
     }
 }
