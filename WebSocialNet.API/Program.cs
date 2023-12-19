@@ -9,6 +9,7 @@ using WebSocialNet.API.Authorization;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using WebSocialNet.Domain.DTOs.ChatDTOs;
+using WebApplication1.Exceptions;
 
 namespace WebSocialNet.API
 {
@@ -88,6 +89,7 @@ namespace WebSocialNet.API
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<GlobalExceptionMiddleware>();
             app.UseMiddleware<JwtMiddleware>();
 
             app.UseHttpsRedirection();

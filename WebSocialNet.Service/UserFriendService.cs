@@ -22,6 +22,7 @@ namespace WebSocialNet.Service
         {
             //todo -> check if both users exists
             //todo -> check if users are not already friends
+            //todo -> then, check if the user accepted the friend requests
             {
                 var friendship = new Friendship
                 {

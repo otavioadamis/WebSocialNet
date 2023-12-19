@@ -4,6 +4,7 @@ using WebSocialNet.Domain.DTOs.ChatDTOs;
 using WebSocialNet.Domain.Entities;
 using WebSocialNet.Domain.Interfaces.IRepositories;
 using WebSocialNet.Domain.Interfaces.IServices;
+using WebApplication1.Exceptions;
 
 namespace WebSocialNet.Service
 {
@@ -34,7 +35,7 @@ namespace WebSocialNet.Service
         public IEnumerable<ChatDTO> GetChat(string chatId, string senderUserId)
         {
             var chatAndUser = _chatRepository.GetChatsWithUsersIds(chatId, senderUserId);
-                if(chatAndUser == null) { throw new ArgumentException("chat not found"); }
+                if(chatAndUser == null) { throw new UserFriendlyException("chat not found"); }
             
             return chatAndUser;
         }
@@ -46,7 +47,7 @@ namespace WebSocialNet.Service
 
             if (currentUser == null || chatUser == null)
             {
-                throw new ArgumentException("Error finding users!");
+                throw new UserFriendlyException("Error finding users!");
             }
 
             var newChat = new Chat()
@@ -72,7 +73,7 @@ namespace WebSocialNet.Service
 
             if (groupChatUsersList == null)
             {
-                throw new ArgumentException("Error finding users!");
+                throw new UserFriendlyException("Error finding users!");
             }
             
             var newChat = new Chat()
@@ -96,10 +97,10 @@ namespace WebSocialNet.Service
         public GroupChatDTO AddToGroup(string loggedInUserId, string userId, string groupChatId)
         {
             var chat = _chatRepository.GetById(groupChatId);
-            if (chat == null) { throw new ArgumentException("Chat not found"); }
+            if (chat == null) { throw new UserFriendlyException("Chat not found"); }
 
             var userToAdd = _userRepository.GetById(userId);
-            if (userToAdd == null) { throw new ArgumentException("User Not Found"); }
+            if (userToAdd == null) { throw new UserFriendlyException("User Not Found"); }
 
             if (loggedInUserId == chat.UserAdminId && !chat.Users.Contains(userToAdd))
             {
@@ -114,18 +115,18 @@ namespace WebSocialNet.Service
 
                 return groupChatDTO;
             }
-            else { throw new ArgumentException("Not allowed!"); }
+            else { throw new UserFriendlyException("Not allowed!"); }
         }
 
         public GroupChatDTO RemoveFromGroup(string loggedInUserId, string userId, string groupChatId)
         {
             var chat = _chatRepository.GetById(groupChatId);
-            if (chat == null) { throw new ArgumentException("Chat not found"); }
+            if (chat == null) { throw new UserFriendlyException("Chat not found"); }
 
             if (loggedInUserId == chat.UserAdminId)
             {
                 var userToRemove = _userRepository.GetById(userId);
-                if (!chat.Users.Contains(userToRemove)) { throw new ArgumentException("User not founded in chat"); }
+                if (!chat.Users.Contains(userToRemove)) { throw new UserFriendlyException("User not founded in chat"); }
 
                 chat.Users.Remove(userToRemove);
                 _chatRepository.SaveChanges();
@@ -137,7 +138,7 @@ namespace WebSocialNet.Service
 
                 return groupChatDTO;
             }
-            else { throw new ArgumentException("Not allowed!"); }
+            else { throw new UserFriendlyException("Not allowed!"); }
         }
 
         public IEnumerable<RecentChatsDTO> GetRecentChats(string userId) 
@@ -162,7 +163,7 @@ namespace WebSocialNet.Service
 
                 return newGroupChatDTO;
             }
-            throw new ArgumentException("Cannot change the name of this chat!");
+            throw new UserFriendlyException("Cannot change the name of this chat!");
         }
     }
 }

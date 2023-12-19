@@ -47,7 +47,8 @@ namespace WebSocialNet.API.Controllers
         [HttpPut("adduser/{chatId}")]
         public IActionResult AddUserToGroupChat(string chatId, string userToAddId)
         {
-            var groupChat = _chatService.AddToGroup(userToAddId, chatId);
+            var user = (User)HttpContext.Items["User"];
+            var groupChat = _chatService.AddToGroup(user.Id, userToAddId, chatId);
             return Ok(groupChat);
         }
 
@@ -55,7 +56,8 @@ namespace WebSocialNet.API.Controllers
         [HttpPut("removeuser/{chatId}")]
         public IActionResult RemoveUserFromGroupChat(string chatId, string userToAddId)
         {
-            var groupChat = _chatService.RemoveFromGroup(userToAddId, chatId);
+            var user = (User)HttpContext.Items["User"];
+            var groupChat = _chatService.RemoveFromGroup(user.Id, userToAddId, chatId);
             return Ok(groupChat);
         }
 
@@ -81,7 +83,8 @@ namespace WebSocialNet.API.Controllers
         [HttpPut("{chatId}")]
         public IActionResult RenameGroupChat(string chatId, string newChatName)
         {
-            var newGroupChatName = _chatService.RenameGroupChat(chatId, newChatName);
+            var user = (User)HttpContext.Items["User"];
+            var newGroupChatName = _chatService.RenameGroupChat(user.Id, chatId, newChatName);
             return Ok(newGroupChatName);
         }
     }

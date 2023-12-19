@@ -1,4 +1,5 @@
-﻿using WebSocialNet.Domain.DTOs.UserDTOs;
+﻿using WebApplication1.Exceptions;
+using WebSocialNet.Domain.DTOs.UserDTOs;
 using WebSocialNet.Domain.Entities;
 using WebSocialNet.Domain.Interfaces.IRepositories;
 using WebSocialNet.Domain.Interfaces.IServices;
@@ -18,7 +19,7 @@ namespace WebSocialNet.Service
 
         public User GetById(string id)
         {
-            var user = _userRepository.GetById(id) ?? throw new ArgumentException("Not found");
+            var user = _userRepository.GetById(id) ?? throw new UserFriendlyException("Not found");
             return user;
         }
 
@@ -38,7 +39,7 @@ namespace WebSocialNet.Service
             var checkEmail = _userRepository.GetByEmail(thisUser.Email);
             if (checkEmail != null)
             {
-                throw new ArgumentException("Sorry! This email has already been used!");
+                throw new UserFriendlyException("Sorry! This email has already been used!");
             }
 
             thisUser.Password = BCrypt.Net.BCrypt.HashPassword(thisUser.Password);
@@ -71,10 +72,10 @@ namespace WebSocialNet.Service
 
         public LoginResponseModel Login(UserLoginDTO thisUser)
         {
-            var user = _userRepository.GetByEmail(thisUser.Email) ?? throw new ArgumentException("User Not found");
+            var user = _userRepository.GetByEmail(thisUser.Email) ?? throw new UserFriendlyException("User Not found");
 
             bool isPasswordMatch = BCrypt.Net.BCrypt.Verify(thisUser.Password, user.Password);
-            if (!isPasswordMatch) { throw new ArgumentException("Invalid credentials!"); }
+            if (!isPasswordMatch) { throw new UserFriendlyException("Invalid credentials!"); }
 
             string token = _authorizationService.CreateToken(user);
 
@@ -92,14 +93,14 @@ namespace WebSocialNet.Service
         // Read
         public List<User> GetAllUsers()
         {
-            var users = _userRepository.Get() ?? throw new ArgumentException("Theres nobody here!");
+            var users = _userRepository.Get() ?? throw new UserFriendlyException("Theres nobody here!");
             return users;
         }
 
         // Update
         public UserResponseDTO UpdateInfo(string _id, UserUpdateInfoDTO updatedUser)
         {
-            var user = _userRepository.GetById(_id) ?? throw new ArgumentException("User not found!");
+            var user = _userRepository.GetById(_id) ?? throw new UserFriendlyException("User not found!");
 
             updatedUser.UpdateFields(user);
             _userRepository.SaveChanges();
@@ -114,7 +115,7 @@ namespace WebSocialNet.Service
         public string ForgotPassword(string email)
         {
             var user = _userRepository.GetByEmail(email);
-            if (user == null) { throw new ArgumentException("User not found!"); }
+            if (user == null) { throw new UserFriendlyException("User not found!"); }
 
             string token =
                 _authorizationService.CreateToken(user);
@@ -125,12 +126,12 @@ namespace WebSocialNet.Service
         public UserResponseDTO ChangePw(string _id, UserResetPwDTO thisUser)
         {
             var user = _userRepository.GetById(_id);
-            if (user == null) { throw new ArgumentException("Cant find user!"); };
+            if (user == null) { throw new UserFriendlyException("Cant find user!"); };
 
             bool isPasswordMatch = BCrypt.Net.BCrypt.Verify(thisUser.Password, user.Password);
-            if (isPasswordMatch) { throw new ArgumentException("Password needs to be different than the current password"); }
+            if (isPasswordMatch) { throw new UserFriendlyException("Password needs to be different than the current password"); }
 
-            if (thisUser.Password != thisUser.ConfirmPassword) { throw new ArgumentException("Confirm Password and Passoword fiels must be equal"); }
+            if (thisUser.Password != thisUser.ConfirmPassword) { throw new UserFriendlyException("Confirm Password and Passoword fiels must be equal"); }
 
             thisUser.Password = BCrypt.Net.BCrypt.HashPassword(thisUser.Password);
 

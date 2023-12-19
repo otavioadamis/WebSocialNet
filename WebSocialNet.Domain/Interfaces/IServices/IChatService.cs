@@ -15,8 +15,8 @@ namespace WebSocialNet.Domain.Interfaces.IServices
         public GroupChatDTO CreateGroupChat(string senderUserId, List<string> receiversUsersIds, string chatName);
         public IEnumerable<ChatDTO> GetChat(string chatId, string senderUserId);
         public IEnumerable<RecentChatsDTO> GetRecentChats(string userId);
-        public GroupChatDTO RenameGroupChat(string chatId, string newGroupName);
-        public GroupChatDTO AddToGroup(string userId, string groupChatId);
-        public GroupChatDTO RemoveFromGroup(string userId, string groupChatId);
+        public GroupChatDTO RenameGroupChat(string loggedInUserId, string chatId, string newGroupName);
+        public GroupChatDTO AddToGroup(string loggedInUserId, string userId, string groupChatId);
+        public GroupChatDTO RemoveFromGroup(string loggedInUserId, string userId, string groupChatId);
     }
 }
